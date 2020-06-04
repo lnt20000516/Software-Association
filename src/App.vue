@@ -1,12 +1,14 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+     <router-view/>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'App'
+}
+</script>
 
 <style>
 #app {
@@ -28,5 +30,21 @@
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+ 
+.component-enter,
+.component-leave-to {
+    opacity: 0;
+    transform: translateX(50px);
+}
+/* v-enter-active 入场动画时间段 */
+/* v-leave-active 离场动画时间段 */
+
+.component-enter-active,
+.component-leave-active {
+    transition: all 0.3s ease;
+}
+span:hover,h2:hover,svg:hover,img:hover {
+    cursor: pointer;
 }
 </style>
