@@ -5,7 +5,7 @@
         <el-breadcrumb-item style="font-size:18px;">借阅记录</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div >
+    <div>
       <span>项目</span>
       <el-select v-model="selected" placeholder="请选择">
         <el-option label="书籍名称" value="bookName"></el-option>
