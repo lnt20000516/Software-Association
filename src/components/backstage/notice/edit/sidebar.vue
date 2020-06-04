@@ -1,11 +1,11 @@
 <template>
   <div class="Sidebar">
     <el-col :span="24">
-      <p>置顶</p>
+      <p class="small-title">置顶</p>
       <el-switch style="float:right;" v-model="top" active-color="#409EFF" inactive-color="#e0e0e0"></el-switch>
     </el-col>
     <el-col :span="24" v-if="top">
-      <p>高级置顶</p>
+      <p  class="small-title">高级置顶</p>
       <el-switch
         style="float:right;"
         v-model="highTop"
@@ -14,19 +14,30 @@
       ></el-switch>
     </el-col>
     <el-col :span="24">
-      <p>选择分类</p>
+      <div class="block" >
+        <p class="demonstration small-title">发布时间</p>
+        <el-date-picker
+          style="width:100%;"
+          v-model="operation.date"
+          type="datetime"
+          placeholder="选择日期时间"
+        ></el-date-picker>
+      </div>
+    </el-col>
+    <el-col :span="24">
+      <p  class="small-title">选择分类</p>
       <div id="category" class="overflow selectDiv">
         <el-radio
           v-for="item in categoryData"
           :key="item.id"
           v-model="operation.newsCategoryId"
           :label="item.id"
-          style="float:left;width:100%;"
+          style="display:block;"
         >{{item.newsCategoryName}}</el-radio>
       </div>
     </el-col>
     <el-col :span="24">
-      <p style=" margin: 10px 0;">文章标签</p>
+      <p  class="small-title" style=" margin: 10px 0;">文章标签</p>
       <div class="overflow selectDiv">
         <el-tag
           style=" margin: 3px;"
@@ -60,7 +71,8 @@ export default {
       operation: {
         top: 0,
         newsCategoryId: "",
-        newsLabels: []
+        newsLabels: [],
+        date:''
       },
       categoryData: [],
       inputVisible: false,
@@ -109,9 +121,8 @@ export default {
       let _this = this;
       this.$axios("newscategory/", {
         method: "get",
-        headers: {
-          "X-XSRF-TOKEN": this.$cookies.get("XSRF-TOKEN"),
-          "HEADER-TOKEN": localStorage.getItem("HEADER_TOKEN")
+        params:{
+          limit:1000
         },
         credentials: "include"
       }).then(res => {
@@ -174,7 +185,7 @@ p {
 .selectDiv {
   overflow: auto;
   width: 90%;
-  height: 160px;
+  height: 130px;
   border: 1px solid #e0e0e0;
   padding: 10px;
 }
@@ -209,5 +220,9 @@ p {
   padding: 0 10px;
   box-sizing: content-box;
   width: 90%;
+}
+.small-title{
+ font-size: 14px;
+ color: #999999;
 }
 </style>

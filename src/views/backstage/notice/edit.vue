@@ -4,13 +4,13 @@
         <el-row :gutter="24">
             <div style="margin:23px;">
                 <el-breadcrumb separator-class="el-icon-arrow-right">
-                    <el-breadcrumb-item :to="{ path: '/Backstage/news' }" style="font-size:18px;">管理公告</el-breadcrumb-item>
+                    <el-breadcrumb-item :to="{ path: '/Backstage/notice' }" style="font-size:18px;">管理公告</el-breadcrumb-item>
                     <el-breadcrumb-item style="font-size:18px;">编辑公告</el-breadcrumb-item>
                 </el-breadcrumb>
             </div>
         </el-row>
         <el-row :gutter="24">
-            <el-col :span="19">
+            <el-col :span="18">
                 <el-input style="margin:10px 0;" v-model="news.title" placeholder="标题"></el-input>
                 <edit ref="edit"></edit>
                 <div style="float:right;margin:10px 0;">
@@ -18,7 +18,7 @@
                     <el-button type="primary" @click="putOut(0)">发布公告</el-button>
                 </div>
             </el-col>
-            <el-col :span="5">
+            <el-col :span="6">
                 <el-card class="box-card">
                     <div slot="header" class="clearfix" style="text-align:left;font-weight:bold;">
                         <span>操作</span>
@@ -74,7 +74,7 @@ export default {
                 newsLabel: _this.operation.newsLabels.join(','),
                 title: _this.news.title,
                 top: _this.operation.top,
-                topTime: (new Date() - 0) / 1000
+                topTime: this.operation.date?this.operation.date:(new Date() - 0) / 1000
             }
             if (this.$route.query.id) {
                 method = 'put'
@@ -89,7 +89,7 @@ export default {
                     if (flag == 1) msg = '保存成功'
                     else msg = '发布成功'
                     this.$message.success(msg);
-                    this.$router.push('/Backstage/Notice/ManageNotice')
+                    this.$router.push('/backstage/notice/manager')
                 } else {
                     this.$message.error(res.data.message)
                 }
