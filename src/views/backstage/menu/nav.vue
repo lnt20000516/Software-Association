@@ -50,7 +50,7 @@
       </el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="menuId" label="ID" width="60"></el-table-column>
-      <el-table-column prop="url" label="路由" width="100"></el-table-column>
+      <el-table-column prop="url" label="路由"></el-table-column>
       <el-table-column prop="perms" label="可访问接口"></el-table-column>
       <el-table-column label="图标" width="60">
         <template slot-scope="scope">
@@ -188,12 +188,12 @@ export default {
           this.allMenu = res.data.data;
           this.allMenu.forEach(item => {
             //用于展开子菜单
-            if (item.childList.length != 0) {
+            if (item.menuNodeList&&item.menuNodeList.length != 0) {
               item.hasChildren = true;
               item.open = false;
               item.openIcon = "el-icon-caret-right";
-              item.childList.forEach(item => {
-                if (item.childList.length != 0) {
+              item.menuNodeList.forEach(item => {
+                if (item.menuNodeList&&item.menuNodeList.length != 0) {
                   item.hasChildren = true;
                   item.open = false;
                   item.openIcon = "el-icon-caret-right";
@@ -208,12 +208,12 @@ export default {
           });
         } else {
           this.$message.error({
-            message: res.data.message
+            message: "请求出错"
           });
         }
       } catch (err) {
         this.$message.error({
-          message: "请求出错"
+          message: err
         });
       }
     },
@@ -228,19 +228,19 @@ export default {
           row.icon = row.openIcon; //为了引起渲染，不然上面的class应用不上
           row.icon = icon;
           setTimeout(() => {
-            row.childList.forEach(item => {
+            row.menuNodeList.forEach(item => {
               this.allMenu.splice(i++, 0, item);
             });
             row.openIcon = "el-icon-caret-bottom";
           }, 300);
           this.toInsertRowDate = t;
         } else {
-          let len = row.childList.length;
+          let len = row.menuNodeList.length;
           if (row.parentId === 0) {
-            row.childList.forEach(item => {
+            row.menuNodeList.forEach(item => {
               if (item.open) {
                 item.open = false;
-                len += item.childList.length;
+                len += item.menuNodeList.length;
                 item.openIcon = "el-icon-caret-right";
               }
             });
@@ -283,7 +283,7 @@ export default {
         if (menu === 0) {
           this.menu.orderNum = this.parentArr.length;
         } else {
-          this.menu.orderNum = row.childList.length;
+          this.menu.orderNum = row.menuNodeList.length;
         }
       }
       this.btnType = type;
@@ -418,5 +418,8 @@ export default {
 }
 .el-table__row{
   transition: all 1s;
+}
+p{
+  margin: 0;
 }
 </style>

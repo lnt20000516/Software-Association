@@ -122,7 +122,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="isOpenAdd = false">取 消</el-button>
-        <el-button type="primary" @click="addRole()">确 定</el-button>
+        <el-button type="primary" @click="updateRole()">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -138,11 +138,14 @@ export default {
       formLabelWidth: "120px"
     };
   },
-  created() {
-    setTimeout(() => {
+  watch:{
+    allRole:function(newVal){
+      console.log(newVal);
+      setTimeout(() => {
       this.$refs.add.style.opacity = 1;
       this.$refs.add.style.transform = "rotate(-90deg)";
-    }, this.allRole.length * 1500);
+    },newVal.length*200);
+    }
   },
   methods: {
     beforeEnter: function(el) {
@@ -235,8 +238,39 @@ export default {
       }
     },
     setRole(index) {
-      this.role = this.allRole[index];
+      let role=this.allRole[index];
+      this.role = {
+        roleId:role.roleId,
+        roleName:role.roleName,
+        remark:role.remark
+      }
       this.dialogVisible = true;
+    },
+    async updateRole() {
+      try {
+        let res = await this.$axios.put("/sys/role/"+this.role.roleId,this.role);
+        if (res.status === 200) {
+          if (res.data.code === 200) {
+            this.$message.success({
+              message: "修改成功"
+            });
+             this.dialogVisible = false;
+             this.$emit("setAllRole")
+          } else {
+            this.$message.error({
+              message: res.data.message
+            });
+          }
+        } else {
+          this.$message.error({
+            message: "请求错误"
+          });
+        }
+      } catch (err) {
+        this.$message.error({
+          message: err
+        });
+      }
     }
   }
 };

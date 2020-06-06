@@ -4,22 +4,18 @@
     <el-table :data="allRole" style="width: 100%" ref="jurisdictionList">
       <el-table-column type="expand">
         <template slot-scope="props">
-          <el-form label-position="left" inline class="demo-table-expand">
-            <el-form-item label="角色ID">
-              <span>{{ props.row.roleId }}</span>
-            </el-form-item>
-            <el-form-item label="角色名称">
-              <span>{{ props.row.roleName }}</span>
-            </el-form-item>
-            <el-form-item label="创建时间">
-              <span>{{ props.row.createTime }}</span>
-            </el-form-item>
-          </el-form>
+          <p style="color: #909399;">可访问菜单</p>
+          <el-tree
+            :data="props.row.menuNodeList"
+            :default-expand-all="true"
+            :props="menuProps"
+            empty-text="尚未分配权限"
+          ></el-tree>
         </template>
       </el-table-column>
       <el-table-column label="ID" prop="roleId" width="50"></el-table-column>
       <el-table-column label="角色名称" prop="roleName" width="150"></el-table-column>
-      <el-table-column label="创建者" prop="createUserId" width="150"></el-table-column>
+      <el-table-column label="创建者" prop="createName" width="150"></el-table-column>
       <el-table-column label="创建时间" prop="createTime"></el-table-column>
       <el-table-column label="描述" prop="remark"></el-table-column>
       <el-table-column>
@@ -58,21 +54,69 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
+      <el-form :model="form">
+        <el-form-item label="活动名称" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="分配权限" :label-width="formLabelWidth">
+          <el-tree
+            :data="menuTree"
+            show-checkbox
+            node-key="id"
+            ref="menuTree"
+            :highlight-current="true"
+            :props="menuProps"
+          ></el-tree>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
 export default {
   data() {
     return {
-      allRole: []
+      allRole: [],
+      menuTree: [],
+      menuProps: {
+        children: "menuNodeList",
+        label: "name"
+      },
+      dialogVisible: false,
+      form: {},
+      formLabelWidth: "120px"
     };
   },
+  created() {
+    this.setMenuTree()
+  },
   methods: {
+    async setMenuTree() {
+      try {
+        let res = await this.$axios.get("/sys/menu/tree/list");
+        if (res.status === 200) {
+          console.log(res);
+
+          this.menuTree = res.data.data;
+        } else {
+          this.$message.error({
+            message: "请求错误"
+          });
+        }
+      } catch (err) {
+        this.$message.error({
+          message: err
+        });
+      }
+    },
     handleEdit(index, row) {
       console.log(index, row);
-    },
-    handleDelete(index, row) {
-      console.log(index, row);
+      this.dialogVisible = true;
     }
   }
 };
@@ -93,8 +137,5 @@ export default {
 
 .el-table {
   transition: all 1s;
-}
-.el-form-item__label {
-  color: #909399 !important;
 }
 </style>
