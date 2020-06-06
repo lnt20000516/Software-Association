@@ -71,10 +71,10 @@
                   <el-col :span="8">
                     <h4 style="margin:16px 0">{{item.newsCategoryName}}</h4>
                   </el-col>
-                  <el-col :span="11">
+                  <el-col :span="10">
                     <p style="text-overflow:ellipsis;">{{item.remark}}</p>
                   </el-col>
-                  <el-col :span="2">
+                  <el-col :span="3">
                     <p>
                       <span class="update-span">
                         <svg
@@ -152,12 +152,12 @@
                       <el-input placeholder="请输入分类名称" v-model="sort.newsCategoryName" clearable></el-input>
                     </p>
                   </el-col>
-                  <el-col :span="12">
+                  <el-col :span="11">
                     <p>
                       <el-input placeholder="请输入分类描述" v-model="sort.remark" clearable></el-input>
                     </p>
                   </el-col>
-                  <el-col :span="1">
+                  <el-col :span="2">
                     <p>
                       <el-button type="success" icon="el-icon-check" circle @click="addSort()"></el-button>
                     </p>

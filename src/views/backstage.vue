@@ -82,7 +82,7 @@ export default {
 }
 .outer {
   margin: 50px 50px;
-  height: 100%;
+ 
   background-color: white;
   border-radius: 10px !important;
   box-shadow: 0px 0px 20px 5px #eeeeee;

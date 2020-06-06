@@ -117,7 +117,12 @@
         <el-form-item label="名称" :label-width="formLabelWidth">
           <el-input v-model="menu.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="父级菜单" :label-width="formLabelWidth" v-if="menu.isP">
+        <el-form-item
+          label="父级菜单"
+          style="text-aligin:left;"
+          :label-width="formLabelWidth"
+          v-if="menu.isP"
+        >
           <el-select v-model="menu.parentId" placeholder="请选择" style="width:100%">
             <el-option
               v-for="item in parentArr"
@@ -142,7 +147,7 @@
             show-word-limit
             resize="none"
             rows="8"
-            placeholder="贴入表示图标的代码(建议宽高18px)"
+            placeholder="贴入表示图标的代码(建议宽高18~30px)"
           ></el-input>
         </el-form-item>
         <el-form-item label="是否可用" :label-width="formLabelWidth" style="width:150px">
@@ -177,11 +182,7 @@ export default {
   methods: {
     async setAllMenu() {
       try {
-        let res = await this.$axios.get("sys/menu/tree/list", {
-          params: {
-            limit: 1000
-          }
-        });
+        let res = await this.$axios.get("sys/menu/tree/list");
         if (res.status === 200) {
           this.allMenu = {};
           this.allMenu = res.data.data;
@@ -248,7 +249,6 @@ export default {
           row.open = false;
           row.openIcon = "el-icon-caret-right";
         }
-        console.log(this.allMenu);
       }
     },
     openDialog(menu, type, row) {
@@ -308,7 +308,9 @@ export default {
               message: "添加成功"
             });
             this.menu = {};
-            window.location.reload();
+            setTimeout(() => {
+              window.location.reload();
+            }, 200);
           } else {
             this.$message.error({
               message: res.data.message
@@ -331,7 +333,7 @@ export default {
           "sys/menu/" + this.menu.menuId,
           this.menu
         );
-        console.log(res);
+      
         if (res.status === 200) {
           if (res.data.code === 200) {
             this.$message.success({
@@ -339,7 +341,9 @@ export default {
             });
             this.isOpenDialog = false;
             this.menu = {};
-            this.setAllMenu();
+            setTimeout(() => {
+              window.location.reload();
+            }, 200);
           } else {
             this.$message.error({
               message: res.data.message
@@ -373,28 +377,28 @@ export default {
         });
     },
     async deleteMenu(id) {
-      try{
+      try {
         let res = await this.$axios.delete("sys/menu/" + id);
-      if (res.status === 200) {
-        if (res.data.code === 200) {
-          this.$message.success({
-            message: "删除成功!"
-          });
-          window.location.reload();
+        if (res.status === 200) {
+          if (res.data.code === 200) {
+            this.$message.success({
+              message: "删除成功!"
+            });
+            window.location.reload();
+          } else {
+            this.$message.error({
+              message: res.data.message
+            });
+          }
         } else {
           this.$message.error({
-            message: res.data.message
-          });
-        }
-      } else {
-        this.$message.error({
             message: "请求出错"
           });
-      }
-      }catch(err){
+        }
+      } catch (err) {
         this.$message.error({
-            message: err
-          });
+          message: err
+        });
       }
     },
     cancel() {
@@ -411,5 +415,8 @@ export default {
 }
 .el-link {
   font-size: 13px;
+}
+.el-table__row{
+  transition: all 1s;
 }
 </style>
