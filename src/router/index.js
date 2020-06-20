@@ -105,24 +105,58 @@ const routes = [{
                     }
                 ]
             },
+            {
+                path: 'manage',
+                name: 'manage',
+                redirect: 'manage/admin',
+                component: () =>
+                    import ('../views/backstage/manage.vue'),
+                children: [{
+                        path: 'admin',
+                        name: 'admin',
+                        component: () =>
+                            import ('../views/backstage/manage/admin.vue'),
+                    },
+                    {
+                        path: 'position',
+                        name: 'position',
+                        component: () =>
+                            import ('../views/backstage/manage/position.vue'),
+                    }
+                ]
 
-            {
-                path: 'initiation',
-                name: 'initiation',
+            }, {
+                path: 'system',
+                name: 'system',
+                redirect: 'system/log',
                 component: () =>
-                    import ('../views/backstage/initiation.vue')
-            },
-            {
-                path: 'member',
-                name: 'member',
-                component: () =>
-                    import ('../views/backstage/member.vue')
+                    import ('../views/backstage/system.vue'),
+                children: [{
+                    path: 'log',
+                    name: 'log',
+                    component: () =>
+                        import ('../views/backstage/system/log.vue'),
+                }]
             },
             {
                 path: 'resource',
                 name: 'resource',
+                redirect: 'resource/upload',
                 component: () =>
-                    import ('../views/backstage/resource.vue')
+                    import ('../views/backstage/resource.vue'),
+                children: [{
+                        path: 'secretKey',
+                        name: 'secretKey',
+                        component: () =>
+                            import ('../views/backstage/resource/secretKey.vue'),
+                    },
+                    {
+                        path: 'upload',
+                        name: 'upload',
+                        component: () =>
+                            import ('../views/backstage/resource/upload.vue'),
+                    },
+                ]
             },
             {
                 path: 'book/statistics',

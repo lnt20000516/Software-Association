@@ -138,13 +138,12 @@ export default {
       formLabelWidth: "120px"
     };
   },
-  watch:{
-    allRole:function(newVal){
-      console.log(newVal);
+  watch: {
+    allRole: function(newVal) {
       setTimeout(() => {
-      this.$refs.add.style.opacity = 1;
-      this.$refs.add.style.transform = "rotate(-90deg)";
-    },newVal.length*200);
+        this.$refs.add.style.opacity = 1;
+        this.$refs.add.style.transform = "rotate(-90deg)";
+      }, newVal.length * 200);
     }
   },
   methods: {
@@ -238,24 +237,27 @@ export default {
       }
     },
     setRole(index) {
-      let role=this.allRole[index];
+      let role = this.allRole[index];
       this.role = {
-        roleId:role.roleId,
-        roleName:role.roleName,
-        remark:role.remark
-      }
+        roleId: role.roleId,
+        roleName: role.roleName,
+        remark: role.remark
+      };
       this.dialogVisible = true;
     },
     async updateRole() {
       try {
-        let res = await this.$axios.put("/sys/role/"+this.role.roleId,this.role);
+        let res = await this.$axios.put(
+          "/sys/role/" + this.role.roleId,
+          this.role
+        );
         if (res.status === 200) {
           if (res.data.code === 200) {
             this.$message.success({
               message: "修改成功"
             });
-             this.dialogVisible = false;
-             this.$emit("setAllRole")
+            this.dialogVisible = false;
+            this.$emit("setAllRole");
           } else {
             this.$message.error({
               message: res.data.message

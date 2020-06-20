@@ -1,5 +1,5 @@
 <template>
-  <div class="aside" style="padding:20px 0;">
+  <div class="aside-r" style="padding:20px 0;">
     <router-link to="/" tag="div" style="font-size:18px;">
       <el-avatar :src="head"></el-avatar>
     </router-link>
@@ -77,6 +77,12 @@ export default {
         "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
     };
   },
+  props:{
+    maxH:{
+      type:Number,
+      default:0
+    }
+  },
   created() {
     this.isLogin();
     this.Index = this.$router.currentRoute.path;
@@ -96,7 +102,7 @@ export default {
           showClose: false
         });
         this.$cookies.remove("activeUser");
-        this.$router.push("/HomePage");
+        this.$router.push("/");
       }
     },
      exit() {
@@ -122,6 +128,7 @@ export default {
 };
 </script>
 <style>
+
 .path {
   fill: rgb(55, 185, 233);
   transition: all 1s;

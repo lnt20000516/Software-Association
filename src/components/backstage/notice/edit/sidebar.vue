@@ -5,7 +5,7 @@
       <el-switch style="float:right;" v-model="top" active-color="#409EFF" inactive-color="#e0e0e0"></el-switch>
     </el-col>
     <el-col :span="24" v-if="top">
-      <p  class="small-title">高级置顶</p>
+      <p class="small-title">高级置顶</p>
       <el-switch
         style="float:right;"
         v-model="highTop"
@@ -14,7 +14,7 @@
       ></el-switch>
     </el-col>
     <el-col :span="24">
-      <div class="block" >
+      <div class="block">
         <p class="demonstration small-title">发布时间</p>
         <el-date-picker
           style="width:100%;"
@@ -25,7 +25,7 @@
       </div>
     </el-col>
     <el-col :span="24">
-      <p  class="small-title">选择分类</p>
+      <p class="small-title">选择分类</p>
       <div id="category" class="overflow selectDiv">
         <el-radio
           v-for="item in categoryData"
@@ -37,7 +37,7 @@
       </div>
     </el-col>
     <el-col :span="24">
-      <p  class="small-title" style=" margin: 10px 0;">文章标签</p>
+      <p class="small-title" style=" margin: 10px 0;">文章标签</p>
       <div class="overflow selectDiv">
         <el-tag
           style=" margin: 3px;"
@@ -72,28 +72,16 @@ export default {
         top: 0,
         newsCategoryId: "",
         newsLabels: [],
-        date:''
+        date: ""
       },
       categoryData: [],
       inputVisible: false,
       newLabel: ""
     };
   },
-  computed: {
-    topVal: function() {
-      if (this.top == true && this.highTop == true) {
-        this.operation.top = 2;
-      } else if (this.top == true) {
-        this.operation.top = 1;
-      } else {
-        this.operation.top = 0;
-      }
-      console.log(this.operation.top);
-    }
-  },
   watch: {
     "operation.top": function(newVal, oldVal) {
-      console.log(newVal);
+      //重新编辑时会传入top值，监听该值如果有置顶则设置置顶
       if (newVal === 2) {
         this.top = true;
         this.highTop = true;
@@ -116,19 +104,42 @@ export default {
     this.setCategoryData();
   },
   methods: {
-    setCategoryData() {
-      //设置分类数据
-      let _this = this;
-      this.$axios("newscategory/", {
-        method: "get",
-        params:{
-          limit:1000
-        },
-        credentials: "include"
-      }).then(res => {
-        this.categoryData = res.data.records;
-        console.log(res);
-      });
+    //设置top值
+    setTop(top, highTop) {
+      if (top && highTop) {
+        this.operation.top = 2;
+      } else if (top) {
+        this.operation.top = 1;
+      } else {
+        this.operation.top = 0;
+      }
+    }, //设置分类数据
+    async setCategoryData() {
+      try {
+        let res = await this.$axios.get("newscategory/", {
+          params: {
+            limit: 1000
+          },
+          credentials: "include"
+        });
+        if (res.status === 200) {
+          if (res.data.code === 200) {
+            this.categoryData = res.data.data.records;
+          } else {
+            this.$message.error({
+              message: res.data.message
+            });
+          }
+        } else {
+          this.$message.error({
+            message: "请求错误"
+          });
+        }
+      } catch (err) {
+        this.$message.error({
+          message: err
+        });
+      }
     },
     //添加标签
     handleClose(tag) {
@@ -159,16 +170,6 @@ export default {
       }
       this.inputVisible = false;
       this.newLabel = "";
-    },
-    //设置top值
-    setTop(top, highTop) {
-      if (top && highTop) {
-        this.operation.top = 2;
-      } else if (top) {
-        this.operation.top = 1;
-      } else {
-        this.operation.top = 0;
-      }
     }
   }
 };
@@ -221,8 +222,8 @@ p {
   box-sizing: content-box;
   width: 90%;
 }
-.small-title{
- font-size: 14px;
- color: #999999;
+.small-title {
+  font-size: 14px;
+  color: #999999;
 }
 </style>

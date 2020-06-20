@@ -11,6 +11,8 @@ import 'froala-editor/js/languages/zh_cn.js'
 import 'froala-editor/js/plugins.pkgd.min.js'
 import VueFroala from 'vue-froala-wysiwyg'
 import Velocity from 'velocity-animate'
+import './tools/dialogDrag.js'
+import * as qiniu from 'qiniu-js'
 Vue.use(cookies)
 Vue.use(ElementUI);
 Vue.use(VueFroala)

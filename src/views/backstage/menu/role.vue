@@ -1,20 +1,20 @@
 <template>
-  <div class="role within">
-    <div style="margin:23px;">
+  <div class="menu-role">
+    <div style="margin:23px 0;">
       <el-breadcrumb separator-class="el-icon-arrow-right" style="width:150px">
         <el-breadcrumb-item style="font-size:18px;">角色权限</el-breadcrumb-item>
       </el-breadcrumb>
-      <el-row :gutter="24">
-        <el-col :span="24" style="padding:0">
-          <roleManage ref="roleManage"  @setAllRole="setAllRole"></roleManage>
-        </el-col>
-      </el-row>
-      <el-row :gutter="24">
-        <el-col :span="24" style="padding:0">
-         <roleAllocation ref="roleAllocation"></roleAllocation>
-        </el-col>
-      </el-row>
     </div>
+    <el-row :gutter="24">
+      <el-col :span="24" style="padding:0">
+        <role-manage ref="roleManage" @setAllRole="setAllRole"></role-manage>
+      </el-col>
+    </el-row>
+    <el-row :gutter="24">
+      <el-col :span="24" style="padding:0">
+        <role-allocation ref="roleAllocation" @setAllRole="setAllRole"></role-allocation>
+      </el-col>
+    </el-row>
   </div>
 </template>
 <script>
@@ -25,7 +25,7 @@ export default {
   data() {
     return {
       allRole: [],
-      allRoleJur: [],
+      allRoleJur: []
     };
   },
   created() {
@@ -41,10 +41,15 @@ export default {
           }
         });
         if (res.status === 200) {
-          this.allRole = res.data.records;
+          if (res.data.code === 200) {
+          this.allRole = res.data.data.records;
           this.$refs.roleManage.allRole = this.allRole;
           this.$refs.roleAllocation.allRole = this.allRole;
-          console.log(this.allRole);
+          } else {
+            this.$message.error({
+              message: res.data.message
+            });
+          }
         } else {
           this.$message.error({
             message: "请求错误"
@@ -63,9 +68,6 @@ export default {
           message: err
         });
       }
-    },
-    aa(){
-      alert(11);
     }
   },
   components: {
@@ -75,5 +77,4 @@ export default {
 };
 </script>
 <style>
-
 </style>

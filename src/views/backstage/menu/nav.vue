@@ -1,114 +1,117 @@
 <template>
-  <div class="Menu within">
-    <div style="margin:23px;">
+  <div class="menu-nav">
+    <div style="margin:23px 0;">
       <el-breadcrumb separator-class="el-icon-arrow-right" style="width:150px">
         <el-breadcrumb-item style="font-size:18px;">导航栏管理</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <el-table :data="allMenu" style="width: 100%" ref="menuTable">
-      <el-table-column width="50">
-        <template slot-scope="scope">
-          <i
-            :class="scope.row.openIcon"
-            v-if="scope.row.type===0&&scope.row.hasChildren"
-            @click="insertRow(scope.$index, scope.row)"
-          ></i>
-        </template>
-      </el-table-column>
-      <el-table-column width="50">
-        <template slot-scope="scope">
-          <i
-            :class="scope.row.openIcon"
-            v-if="scope.row.type===1&&scope.row.hasChildren"
-            @click="insertRow(scope.$index, scope.row)"
-          ></i>
-        </template>
-      </el-table-column>
-      <el-table-column label="#" width="50">
-        <template slot-scope="scope">
-          <el-tooltip class="item" effect="dark" content="删除" placement="top-start">
-            <svg
-              t="1590291279068"
-              class="icon"
-              @click="delTip(scope.$index, scope.row)"
-              viewBox="0 0 1024 1024"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              p-id="4606"
-              width="18"
-              height="18"
+    <div class="menu" ref="menu" style="opacity:0;">
+      <el-table :data="allMenu" style="width: 100%" ref="menuTable">
+        <el-table-column width="50">
+          <template slot-scope="scope">
+            <i
+              :class="scope.row.openIcon"
+              v-if="scope.row.type===0&&scope.row.hasChildren"
+              @click="insertRow(scope.$index, scope.row)"
+            ></i>
+          </template>
+        </el-table-column>
+        <el-table-column width="50">
+          <template slot-scope="scope">
+            <i
+              :class="scope.row.openIcon"
+              v-if="scope.row.type===1&&scope.row.hasChildren"
+              @click="insertRow(scope.$index, scope.row)"
+            ></i>
+          </template>
+        </el-table-column>
+        <el-table-column label="#" width="50">
+          <template slot-scope="scope">
+            <el-tooltip class="item" effect="dark" content="删除" placement="top-start">
+              <svg
+                t="1590291279068"
+                class="icon"
+                @click="delTip(scope.$index, scope.row)"
+                viewBox="0 0 1024 1024"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                p-id="4606"
+                width="18"
+                height="18"
+              >
+                <path d="M672 480v64h-320v-64z" p-id="4607" fill="#d81e06" />
+                <path
+                  d="M512 128a384 384 0 1 1-384 384 384 384 0 0 1 384-384m0-64a448 448 0 1 0 448 448 448 448 0 0 0-448-448z"
+                  p-id="4608"
+                  fill="#d81e06"
+                />
+              </svg>
+            </el-tooltip>
+          </template>
+        </el-table-column>
+        <el-table-column prop="name" label="名称"></el-table-column>
+        <el-table-column prop="menuId" label="ID" width="60"></el-table-column>
+        <el-table-column prop="url" label="路由"></el-table-column>
+        <el-table-column prop="perms" label="可访问接口"></el-table-column>
+        <el-table-column label="图标" width="60">
+          <template slot-scope="scope">
+            <p v-html="scope.row.icon"></p>
+          </template>
+        </el-table-column>
+        <el-table-column label="是否可用" width="80">
+          <template slot-scope="scope">
+            <el-switch v-model="scope.row.status" disabled></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot="header">
+            <div
+              style="text-align:left;margin:20px 0;display: flex;align-items: center;width:150px"
+              @click="openDialog(0,0)"
             >
-              <path d="M672 480v64h-320v-64z" p-id="4607" fill="#d81e06" />
-              <path
-                d="M512 128a384 384 0 1 1-384 384 384 384 0 0 1 384-384m0-64a448 448 0 1 0 448 448 448 448 0 0 0-448-448z"
-                p-id="4608"
-                fill="#d81e06"
-              />
-            </svg>
-          </el-tooltip>
-        </template>
-      </el-table-column>
-      <el-table-column prop="name" label="名称"></el-table-column>
-      <el-table-column prop="menuId" label="ID" width="60"></el-table-column>
-      <el-table-column prop="url" label="路由"></el-table-column>
-      <el-table-column prop="perms" label="可访问接口"></el-table-column>
-      <el-table-column label="图标" width="60">
-        <template slot-scope="scope">
-          <p v-html="scope.row.icon"></p>
-        </template>
-      </el-table-column>
-      <el-table-column label="是否可用" width="80">
-        <template slot-scope="scope">
-          <el-switch v-model="scope.row.status" disabled></el-switch>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作">
-        <template slot="header">
-          <div
-            style="text-align:left;margin:20px 0;display: flex;align-items: center;width:150px"
-            @click="openDialog(0,0)"
-          >
-            <svg
-              t="1590303308927"
-              class="icon"
-              viewBox="0 0 1024 1024"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              p-id="13268"
-              width="18"
-              height="18"
-            >
-              <path
-                d="M512 0c282.752 0 512 229.248 512 512s-229.248 512-512 512S0 794.752 0 512 229.248 0 512 0z m0 85.333333C276.352 85.333333 85.333333 276.352 85.333333 512s191.018667 426.666667 426.666667 426.666667 426.666667-191.018667 426.666667-426.666667S747.648 85.333333 512 85.333333z m-0.042667 170.666667a42.666667 42.666667 0 0 1 42.666667 42.666667v170.666666h170.666667a42.666667 42.666667 0 0 1 0 85.333334h-170.666667v170.666666a42.666667 42.666667 0 0 1-85.333333 0v-170.666666h-170.666667a42.666667 42.666667 0 0 1 0-85.333334h170.666667V298.666667a42.666667 42.666667 0 0 1 42.666666-42.666667z"
-                fill="#008df0"
-                p-id="13269"
-              />
-            </svg>
-            <span style="color:#008df0;padding:0 8px;">添加菜单</span>
-          </div>
-        </template>
-        <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="openDialog(3,scope.row.type,scope.row)">修改</el-button>
-          <span style="margin:0 5px;"></span>
-          <el-link
-            type="info"
-            :underline="false"
-            @click="openDialog(1,1,scope.row)"
-            v-if="scope.row.type===0"
-          >添加子菜单</el-link>
-          <el-link
-            type="info"
-            :underline="false"
-            @click="openDialog(2,2,scope.row)"
-            v-if="scope.row.type==1"
-          >添加可访问接口</el-link>
-        </template>
-      </el-table-column>
-    </el-table>
-
+              <svg
+                t="1590303308927"
+                class="icon"
+                viewBox="0 0 1024 1024"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                p-id="13268"
+                width="18"
+                height="18"
+              >
+                <path
+                  d="M512 0c282.752 0 512 229.248 512 512s-229.248 512-512 512S0 794.752 0 512 229.248 0 512 0z m0 85.333333C276.352 85.333333 85.333333 276.352 85.333333 512s191.018667 426.666667 426.666667 426.666667 426.666667-191.018667 426.666667-426.666667S747.648 85.333333 512 85.333333z m-0.042667 170.666667a42.666667 42.666667 0 0 1 42.666667 42.666667v170.666666h170.666667a42.666667 42.666667 0 0 1 0 85.333334h-170.666667v170.666666a42.666667 42.666667 0 0 1-85.333333 0v-170.666666h-170.666667a42.666667 42.666667 0 0 1 0-85.333334h170.666667V298.666667a42.666667 42.666667 0 0 1 42.666666-42.666667z"
+                  fill="#008df0"
+                  p-id="13269"
+                />
+              </svg>
+              <span style="color:#008df0;padding:0 8px;">添加菜单</span>
+            </div>
+          </template>
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" @click="openDialog(3,scope.row.type,scope.row)">修改</el-button>
+            <span style="margin:0 5px;"></span>
+            <el-link
+              type="info"
+              :underline="false"
+              @click="openDialog(1,1,scope.row)"
+              v-if="scope.row.type===0"
+            >添加子菜单</el-link>
+            <el-link
+              type="info"
+              :underline="false"
+              @click="openDialog(2,2,scope.row)"
+              v-if="scope.row.type==1"
+            >添加可访问接口</el-link>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
     <el-dialog
       :title="dialogTitle"
+      v-if="isOpenDialog"
       :visible.sync="isOpenDialog"
+      v-dialogDrag
       width="450px"
       :destroy-on-close="true"
       @clone="cancel()"
@@ -179,33 +182,48 @@ export default {
   created() {
     this.setAllMenu();
   },
+  watch: {
+    allMenu: function(newVal) {
+      // this.$refs.menu.style.opacity = 0;
+      setTimeout(() => {
+        this.$refs.menu.style.opacity = 1;
+      }, 500);
+      console.log(this.$refs.menu.style);
+    }
+  },
   methods: {
     async setAllMenu() {
       try {
         let res = await this.$axios.get("sys/menu/tree/list");
         if (res.status === 200) {
-          this.allMenu = {};
-          this.allMenu = res.data.data;
-          this.allMenu.forEach(item => {
-            //用于展开子菜单
-            if (item.menuNodeList&&item.menuNodeList.length != 0) {
-              item.hasChildren = true;
-              item.open = false;
-              item.openIcon = "el-icon-caret-right";
-              item.menuNodeList.forEach(item => {
-                if (item.menuNodeList&&item.menuNodeList.length != 0) {
-                  item.hasChildren = true;
-                  item.open = false;
-                  item.openIcon = "el-icon-caret-right";
-                }
+          if (res.data.code === 200) {
+            this.allMenu = {};
+            this.allMenu = res.data.data;
+            this.allMenu.forEach(item => {
+              //用于展开子菜单
+              if (item.menuNodeList && item.menuNodeList.length != 0) {
+                item.hasChildren = true;
+                item.open = false;
+                item.openIcon = "el-icon-arrow-right";
+                item.menuNodeList.forEach(item => {
+                  if (item.menuNodeList && item.menuNodeList.length != 0) {
+                    item.hasChildren = true;
+                    item.open = false;
+                    item.openIcon = "el-icon-arrow-right";
+                  }
+                });
+              }
+              this.parentArr.push({
+                //修改子菜单时的父级菜单
+                menuId: item.menuId,
+                name: item.name
               });
-            }
-            this.parentArr.push({
-              //修改子菜单时的父级菜单
-              menuId: item.menuId,
-              name: item.name
             });
-          });
+          } else {
+            this.$message.error({
+              message: res.data.message
+            });
+          }
         } else {
           this.$message.error({
             message: "请求出错"
@@ -231,7 +249,7 @@ export default {
             row.menuNodeList.forEach(item => {
               this.allMenu.splice(i++, 0, item);
             });
-            row.openIcon = "el-icon-caret-bottom";
+            row.openIcon = "el-icon-arrow-down";
           }, 300);
           this.toInsertRowDate = t;
         } else {
@@ -241,13 +259,13 @@ export default {
               if (item.open) {
                 item.open = false;
                 len += item.menuNodeList.length;
-                item.openIcon = "el-icon-caret-right";
+                item.openIcon = "el-icon-arrow-right";
               }
             });
           }
           this.allMenu.splice(i, len);
           row.open = false;
-          row.openIcon = "el-icon-caret-right";
+          row.openIcon = "el-icon-arrow-right";
         }
       }
     },
@@ -333,7 +351,7 @@ export default {
           "sys/menu/" + this.menu.menuId,
           this.menu
         );
-      
+
         if (res.status === 200) {
           if (res.data.code === 200) {
             this.$message.success({
@@ -416,10 +434,13 @@ export default {
 .el-link {
   font-size: 13px;
 }
-.el-table__row{
+.el-table__row {
   transition: all 1s;
 }
-p{
+p {
   margin: 0;
+}
+.menu {
+  transition: all 0.5s;
 }
 </style>
