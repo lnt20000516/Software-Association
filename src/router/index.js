@@ -22,25 +22,25 @@ const routes = [{
                 path: 'homePage',
                 name: 'homePage',
                 component: () =>
-                    import ('../views/siae/homePage.vue'),
+                    import('../views/siae/homePage.vue'),
             },
             {
                 path: 'joinIn',
                 name: 'joinIn',
                 component: () =>
-                    import ('../views/siae/joinIn.vue'),
+                    import('../views/siae/joinIn.vue'),
             },
             {
                 path: 'notice',
                 name: 'notice',
                 component: () =>
-                    import ('../views/siae/notice.vue'),
+                    import('../views/siae/notice.vue'),
             },
             {
                 path: 'dataDownload',
                 name: 'dataDownload',
                 component: () =>
-                    import ('../views/siae/dataDownload.vue'),
+                    import('../views/siae/dataDownload.vue'),
             },
         ]
     },
@@ -57,25 +57,25 @@ const routes = [{
                 path: 'homePage',
                 name: 'homePage',
                 component: () =>
-                    import ('../views/backstage/homePage.vue')
+                    import('../views/backstage/homePage.vue')
             },
             {
                 path: 'menu',
                 name: 'menu',
                 redirect: '/backstage/menu/nav',
                 component: () =>
-                    import ('../views/backstage/menu.vue'),
+                    import('../views/backstage/menu.vue'),
                 children: [{
                         path: 'nav',
                         name: 'nav',
                         component: () =>
-                            import ('../views/backstage/menu/nav.vue'),
+                            import('../views/backstage/menu/nav.vue'),
                     },
                     {
                         path: 'role',
                         name: 'role',
                         component: () =>
-                            import ('../views/backstage/menu/role.vue'),
+                            import('../views/backstage/menu/role.vue'),
                     },
 
                 ]
@@ -85,23 +85,23 @@ const routes = [{
                 name: 'notice',
                 redirect: '/backstage/notice/manager',
                 component: () =>
-                    import ('../views/backstage/notice.vue'),
+                    import('../views/backstage/notice.vue'),
                 children: [{
                         path: 'manager',
                         name: 'manager',
                         component: () =>
-                            import ('../views/backstage/notice/manage.vue')
+                            import('../views/backstage/notice/manage.vue')
                     }, {
                         path: 'edit',
                         name: 'edit',
                         component: () =>
-                            import ('../views/backstage/notice/edit.vue')
+                            import('../views/backstage/notice/edit.vue')
                     },
                     {
                         path: 'sort',
                         name: 'sort',
                         component: () =>
-                            import ('../views/backstage/notice/sort.vue')
+                            import('../views/backstage/notice/sort.vue')
                     }
                 ]
             },
@@ -110,18 +110,18 @@ const routes = [{
                 name: 'manage',
                 redirect: 'manage/admin',
                 component: () =>
-                    import ('../views/backstage/manage.vue'),
+                    import('../views/backstage/manage.vue'),
                 children: [{
                         path: 'admin',
                         name: 'admin',
                         component: () =>
-                            import ('../views/backstage/manage/admin.vue'),
+                            import('../views/backstage/manage/admin.vue'),
                     },
                     {
                         path: 'position',
                         name: 'position',
                         component: () =>
-                            import ('../views/backstage/manage/position.vue'),
+                            import('../views/backstage/manage/position.vue'),
                     }
                 ]
 
@@ -130,12 +130,12 @@ const routes = [{
                 name: 'system',
                 redirect: 'system/log',
                 component: () =>
-                    import ('../views/backstage/system.vue'),
+                    import('../views/backstage/system.vue'),
                 children: [{
                     path: 'log',
                     name: 'log',
                     component: () =>
-                        import ('../views/backstage/system/log.vue'),
+                        import('../views/backstage/system/log.vue'),
                 }]
             },
             {
@@ -143,45 +143,69 @@ const routes = [{
                 name: 'resource',
                 redirect: 'resource/upload',
                 component: () =>
-                    import ('../views/backstage/resource.vue'),
+                    import('../views/backstage/resource.vue'),
                 children: [{
                         path: 'secretKey',
                         name: 'secretKey',
                         component: () =>
-                            import ('../views/backstage/resource/secretKey.vue'),
+                            import('../views/backstage/resource/secretKey.vue'),
                     },
                     {
                         path: 'upload',
                         name: 'upload',
                         component: () =>
-                            import ('../views/backstage/resource/upload.vue'),
+                            import('../views/backstage/resource/upload.vue'),
                     },
                 ]
             },
             {
-                path: 'book/statistics',
-                component: () =>
-                    import ('../views/backstage/book/Statistics.vue')
+                path: 'book',
+                component: () => import("../views/backstage/book.vue"),
+                redirect: 'book/bookMenu',
+                children: [{
+                        path: 'statistics',
+                        component: () =>
+                            import('../views/backstage/book/Statistics.vue')
+                    },
+                    {
+                        path: 'bookMenu',
+                        component: () =>
+                            import('../views/backstage/book/Bookmenu.vue')
+                    },
+                    {
+                        path: 'category',
+                        component: () =>
+                            import('../views/backstage/book/Category.vue')
+                    },
+                    {
+                        path: 'entry',
+                        component: () =>
+                            import('../views/backstage/book/Entry.vue')
+                    },
+                    {
+                        path: 'record',
+                        component: () =>
+                            import('../views/backstage/book/Record.vue')
+                    }
+                ]
+
             },
             {
-                path: 'book/bookMenu',
-                component: () =>
-                    import ('../views/backstage/book/Bookmenu.vue')
-            },
-            {
-                path: 'book/category',
-                component: () =>
-                    import ('../views/backstage/book/Category.vue')
-            },
-            {
-                path: 'book/entry',
-                component: () =>
-                    import ('../views/backstage/book/Entry.vue')
-            },
-            {
-                path: 'book/record',
-                component: () =>
-                    import ('../views/backstage/book/Record.vue')
+                path: 'user',
+                name: 'user',
+                redirect: 'user/memberManagement',
+                component: () => import('../views/backstage/user.vue'),
+                children: [{
+                        path: 'memberManagement',
+                        name: 'memberManagement',
+                        component: () => import('../views/backstage/user/memberManagement.vue')
+                    },
+                    {
+                        path: 'collegeManagement',
+                        name: 'collegeManagement',
+                        component: () => import('../views/backstage/user/collegeManagement.vue')
+                    }
+                ]
             }
         ]
     }

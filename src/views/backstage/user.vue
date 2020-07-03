@@ -1,5 +1,7 @@
 <template>
-    <div>
-        刘南婷123
-    </div>
+  <div class="user">
+    <transition name="component" mode="out-in">
+      <router-view />
+    </transition>
+  </div>
 </template>
