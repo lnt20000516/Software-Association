@@ -2,7 +2,7 @@
   <div class="login">
     <el-container :style="{backgroundImage:'url('+backs[backIndex]+')'}" ref="loginCon">
       <div class="loginBack" :style="{'max-width':maxW+'px','max-height':maxH+'px'}">
-        <login-content :logo="logo" ></login-content>
+        <login-content :logo="logo"></login-content>
       </div>
       <login-change-back ref="changeBack" :backs="backs" @changeBack="changeBack"></login-change-back>
     </el-container>
@@ -38,10 +38,10 @@ export default {
   },
   mounted() {
     this.init();
-    let that=this;
-    window.onresize=function(){
-    that.init();
-    }
+    let that = this;
+    window.onresize = function() {
+      that.init();
+    };
   },
   watch: {
     backIndex(newVal) {
@@ -50,14 +50,14 @@ export default {
   },
   methods: {
     init() {
-      this.maxH = document.body.clientHeight;
-      this.maxW = document.body.clientWidth;
-      document.getElementsByClassName("el-form-item").forEach(item=>{
-        item.style.marginBottom=(this.maxH*0.02)+'px';
-      })
-      document.getElementsByClassName("el-checkbox-group").forEach(item=>{
-        item.style.margin=(this.maxH*0.02)+'px';
-      })
+      this.maxW = window.outerWidth; //获取网页外部窗体宽
+      this.maxH = window.outerHeight; //获取网页外部窗体高
+      document.getElementsByClassName("el-form-item").forEach(item => {
+        item.style.marginBottom = this.maxH * 0.02 + "px";
+      });
+      document.getElementsByClassName("el-checkbox-group").forEach(item => {
+        item.style.margin = this.maxH * 0.02 + "px";
+      });
     },
     changeBack(Val) {
       this.backIndex = Val;
@@ -79,7 +79,9 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
   height: 100%;
+  width: 100%;
 }
+
 .el-main {
   background: none;
 }

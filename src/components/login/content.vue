@@ -185,7 +185,7 @@ export default {
           });
         }
       } catch (err) {
-        console.log(res);
+        console.log(err);
       }
     }
   }

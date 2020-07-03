@@ -78,7 +78,7 @@ export default {
                 placeholderText: this.placeholder || '请在此输入公告内容',
                 language: 'zh_cn', //国际化
                 imageUploadURL: 'http://120.26.177.203/news/picturesUpload', //上传url
-                imageUploadParams:{'HEADER_TOKEN':''},
+                imageUploadParams:{'HEADER-TOKEN':''},
                 quickInsertButtons: ['image', 'table', 'ul', 'ol', 'hr'], //快速插入项
                 toolbarVisibleWithoutSelection: false, //是否开启 不选中模式
                 disableRightClick: true, //是否屏蔽右击
@@ -93,7 +93,7 @@ export default {
                         that.content = that.value
                     },
                     'image.beforeUpload': function () {
-                        this.opts.imageUploadParams.HEADER_TOKEN = localStorage.getItem('HEADER_TOKEN')
+                        this.opts.imageUploadParams["HEADER-TOKEN"] = localStorage.getItem('HEADER_TOKEN')
                         return true
                     },
                     blur: () => {

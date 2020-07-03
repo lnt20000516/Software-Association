@@ -8,9 +8,11 @@
         <back-header :isShow="isShowHeader" :maxH="maxH" :maxW="maxW"></back-header>
       </div>
       <div class="outer" ref="outer">
+        <div class="within">
         <transition name="component" mode="out-in">
           <router-view />
         </transition>
+        </div>
       </div>
     </div>
     <div class="aside-r-box" ref="asideRBox">
@@ -64,6 +66,7 @@ export default {
   watch: {
     "$route.fullPath": function(newVal) {
       this.load();
+      this.resize();
     }
   },
   methods: {
@@ -81,8 +84,9 @@ export default {
       }, 1000);
     },
     resize() {
-      this.maxW = document.body.clientWidth;
-      this.maxH=document.body.clientHeight;
+      this.maxW = window.outerWidth;//获取网页外部窗体宽
+      this.maxH = window.outerHeight;//获取网页外部窗体高
+      
       let fs = 16;
       let pad = 45;
       if (this.maxW <= 1000) {
@@ -121,9 +125,6 @@ export default {
         this.out.style.margin = "30px";
         this.out.style.boxShadow = "0px 0px 20px 5px #eeeeee";
         this.out.style.backgroundColor = "white";
-        // document.querySelectorAll(".el-dialog").forEach(item => {
-        //   item.removeAttribute("style");
-        // });
         document.querySelectorAll(".within").forEach(item => {
           item.style.padding = "20px 50px";
         });
@@ -137,7 +138,7 @@ export default {
   }
 };
 </script>
-<style >
+<style>
 .logo {
   height: 30px;
 }
@@ -147,6 +148,9 @@ export default {
   display: inline;
   font-weight: 400;
 }
+</style>
+<style scoped>
+
 .component-enter,
 .component-leave-to {
   opacity: 0;
@@ -229,6 +233,7 @@ export default {
   left: 0;
   right: 0;
   z-index: 100000;
+  background-color: rgba(255, 255, 255, 0.6);
 }
 .loading {
   position: absolute;
@@ -281,8 +286,8 @@ export default {
 .el-dialog_wrapper .dialog-fade-leave-active {
   animation-fill-mode: forwards;
 }
-.el-breadcrumb{
-  padding:10px;
+.el-breadcrumb {
+  padding: 10px;
 }
 </style>
 

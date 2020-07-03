@@ -1,5 +1,5 @@
 <template>
-    <div class="resource within">
+    <div class="resource">
     <transition name="component" mode="out-in">
       <router-view />
     </transition>

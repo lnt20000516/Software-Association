@@ -11,11 +11,13 @@
       </el-row>
       <el-row :gutter="24">
         <el-col :span="18">
+          <div style="width:90%">
           <el-input style="margin:10px 0;" v-model="news.title" placeholder="标题"></el-input>
           <edit ref="edit"></edit>
           <div style="float:right;margin:10px 0;">
             <el-button @click="putOut(1)">保存草稿</el-button>
             <el-button type="primary" @click="putOut(0)">发布公告</el-button>
+          </div>
           </div>
         </el-col>
         <el-col :span="6">
@@ -137,6 +139,15 @@ export default {
         });
       }
     }
+  },
+   mounted() {
+    window.onbeforeunload = function(e) {
+      e=e||window.event;
+      if(e){
+        e.retrunValue='关闭提示';
+      }
+      return '关闭提示';
+    };
   },
   components: {
     edit,

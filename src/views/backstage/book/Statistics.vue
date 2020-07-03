@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="">
     <div style="margin:23px ">
       <el-breadcrumb separator-class="el-icon-arrow-right" style="width:150px">
         <el-breadcrumb-item style="font-size:18px;">借阅记录</el-breadcrumb-item>

@@ -31,7 +31,7 @@ axios.interceptors.response.use(
     error => {
         console.log(error)
         if (i < 1) {
-            if (error.response != undefined) {
+            if (error.response != undefined && error.response.status != undefined) {
                 switch (error.response.status) {
                     case 401:
                         {
@@ -55,11 +55,11 @@ axios.interceptors.response.use(
                     case 500:
                         {
                             ElementUI.Notification({
-                                title: "错误",
-                                message: "服务器内部错误",
+                                title: "网络错误",
+                                message: "服务器连接失败，请检查网络设置",
                                 type: "error",
-                                duration: 1000,
-                                showClose: false
+                                duration: 5000,
+                                showClose: true
                             });
                             cookies.remove("activeUser");
                             window.localStorage.removeItem("HEADER_TOKEN")
@@ -84,11 +84,11 @@ axios.interceptors.response.use(
                 }
             } else {
                 ElementUI.Notification({
-                    title: "错误",
-                    message: "服务器连接失败",
+                    title: "网络错误",
+                    message: "服务器连接失败，请检查网络设置",
                     type: "error",
-                    duration: 1000,
-                    showClose: false
+                    duration: 5000,
+                    showClose: true
                 });
                 // return Promise.reject("服务器连接失败");
             }

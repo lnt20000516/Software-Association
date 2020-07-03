@@ -134,7 +134,9 @@ export default {
     },
     async updateStatus(id, status) {
       try {
-        let res = await this.$axios.put(`config/qiniu/${id}/info`,status);
+        let res = await this.$axios.put(`config/qiniu/${id}/info?status=${status}`,);
+        console.log(res);
+        
         if (res.status === 200) {
           if (res.data.code === 200) {
             this.$message.success({

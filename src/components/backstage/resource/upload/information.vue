@@ -5,7 +5,7 @@
       <span style="color:red;margin:0;font-size:18px;">*</span>
       <span>上传封面:</span>(格式jpeg、png，文件大小≤6MB，建议尺寸≥178px*178px)
     </p>
-    <uploadCover @setLogo="setLogo"></uploadCover>
+    <upload-cover @setLogo="setLogo"></upload-cover>
     <p class="info-title" style="clear:both;">
       <span style="color:red;margin:0;font-size:18px;">*</span>
       <span>作者：</span>
@@ -22,7 +22,7 @@
       <span style="color:red;margin:0;font-size:18px;">*</span>
       <span>资源类别:</span>
     </p>
-    <el-select v-model="res.reSortName" placeholder="请选择">
+    <el-select v-model="resSortName" placeholder="请选择">
       <el-option
         v-for="item in resourceCategory"
         :key="item.id"
@@ -30,7 +30,7 @@
         :value="item.resourceCategoryName"
       >
         <span style="float:left">{{item.remark}}</span>
-        <span style="float:right;color:#8492a6;font-size:13px">{{item.resourceCategoryName}}</span>
+        <span style="float:right;color:#8492a6;font-size:13px">{{item.resSortName}}</span>
       </el-option>
     </el-select>
     <p class="info-title" style="clear:both;">
@@ -46,8 +46,19 @@
       resize
       rows="4"
     />
-    <el-button type="primary" round @click="uploadResInfo()">立即上传</el-button>
-    <el-button type round>取消上传</el-button>
+    <div style="margin: 10px;">
+      <el-button type="primary" plain @click="uploadResInfo()"><i class="el-icon-upload"></i> 立即上传</el-button>
+      <el-popover placement="top" width="160" v-model="isOpenClearTip">
+        <p>
+          <i class="el-icon-info" style="color:red"></i> 取消后将不会保留您输入的数据
+        </p>
+        <div style="text-align: right; margin: 0">
+          <el-button size="mini" type="text" @click="isOpenClearTip = false">点错了</el-button>
+          <el-button type="primary" size="mini" @click="clearUpload()">好的</el-button>
+        </div>
+        <el-button slot="reference" type="text" style="color:#666666;"  round >取消上传</el-button>
+      </el-popover>
+    </div>
   </div>
 </template>
 <script>
@@ -55,56 +66,55 @@ import uploadCover from "@/components/backstage/resource/upload/information/uplo
 export default {
   data() {
     return {
-      author: "1",
-      resourceCategoryName: "",
-      description: "",
-      // res: {
-      //   author: "",
-      //   desc: "",
-      //   reSortName: 0,
-      //   resLogo: "",
-      //   resName: ""
-      // },
+      author: "1", //用于判定选择为本人还是他人
+      resSortName: "", //用于绑定选择的资源分类
       res: {
-        author: "1",
+        //上传给服务器的数据
+        author: null,
         description: null,
-        reSortName: null,
+        fileKey: "",
+        type: "2",
         resourceCategoryID: 0,
         resourceLogo: null,
         resourceName: null
       },
-      resourceCategory: []
+      resourceCategory: [],
+      isOpenClearTip: false
     };
   },
   props: {
     resName: {
       type: String,
       default: ""
+    },
+    serverType: {
+      type: String,
+      default: "2"
+    }
+  },
+  watch: {
+    serverType(newVal) {
+      this.res.type = newVal;
     }
   },
   created() {
     this.setResSort();
     this.res.resourceName = this.resName;
-  },
-  watch: {
-    author(newVal) {
-      if (newVal === "1") {
-        res.author = "1";
-      }
-    }
+    this.res.fileKey = this.resName;
   },
   methods: {
     setLogo(val) {
+      //设置上传资源封面链接
       this.res.resourceLogo = val;
     },
     async setResSort() {
+      //设置展示的分类
       try {
         let res = await this.$axios.get("resocategory/page", {
           params: {
             limit: 1000
           }
         });
-        console.log(res);
         if (res.status === 200) {
           if (res.data.code === 200) {
             this.resourceCategory = res.data.data.records;
@@ -124,20 +134,21 @@ export default {
     },
     async uploadResInfo() {
       try {
-        if (this.res.author === "1")
-          this.res.author =await this.getMemberName();
-        this.resourceCategory.forEach(item=>{
-          if(item.resourceCategoryName===this.res.reSortName){
-            this.res.resourceCategoryID=item.id;
+        if (this.author === "1") {
+          await this.setAuthor();
+        }
+        this.resourceCategory.forEach(item => {
+          if (item.resourceCategoryName === this.resSortName) {
+            this.res.resourceCategoryID = item.id;
           }
-        })
+        });
         let res = await this.$axios.post("resources/", this.res);
         if (res.status === 200) {
           if (res.data.code === 200) {
             this.$message.success({
               message: "上传成功"
             });
-            console.log(res);
+            this.$emit("init");
           } else {
             this.$message.error({
               message: res.data.message
@@ -152,17 +163,21 @@ export default {
         console.log(err);
       }
     },
-    async getMemberName() {
+    clearUpload() {
+      this.$emit("init");
+    },
+    async setAuthor() {
+      //获取本人用户名
       try {
         let id = this.$cookies.get("activeUser").split("&")[0];
         let res = await this.$axios.get("member/" + id);
         console.log(res);
         if (res.status === 200) {
           if (res.data.code === 200) {
-            return res.data.data.memberName;
+            this.res.author = res.data.data.memberName;
           } else {
             this.$message.error({
-              message: res.data.message
+              message: "未获取到您的用户名，请确认是否清理localStorage"
             });
           }
         } else {
@@ -174,6 +189,15 @@ export default {
         console.log(err);
       }
     }
+  },
+  mounted() {
+    window.onbeforeunload = function(e) {
+      e = e || window.event;
+      if (e) {
+        e.retrunValue = "关闭提示";
+      }
+      return "关闭提示";
+    };
   },
   components: {
     uploadCover
@@ -194,6 +218,6 @@ export default {
   margin: 10px;
 }
 .el-input {
-  margin: 15px0;
+  margin: 15px 0;
 }
 </style>

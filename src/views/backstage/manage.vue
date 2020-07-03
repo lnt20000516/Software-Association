@@ -1,5 +1,5 @@
 <template>
-  <div class="manage within">
+  <div class="manage">
     <transition name="component" mode="out-in">
       <router-view />
     </transition>

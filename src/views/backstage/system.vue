@@ -1,5 +1,5 @@
 <template>
-  <div class="system within">
+  <div class="system">
     <transition name="component" mode="out-in">
       <router-view />
     </transition>

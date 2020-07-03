@@ -1,6 +1,7 @@
 <template>
   <div class="manage">
     <el-divider content-position="left">角色管理</el-divider>
+    <!--动画效果-->
     <transition-group
       style="list-style:none"
       name="staggered-fade"
@@ -9,8 +10,16 @@
       v-on:before-enter="beforeEnter"
       v-on:enter="enter"
       v-on:leave="leave"
+      data-active="动画效果"
     >
-      <li class="roleMenu" v-for="(item,index) in allRole" :key="item.roleId" :data-index="index">
+      <!--角色展示与管理-->
+      <li
+        class="roleMenu"
+        data-active="角色展示与管理"
+        v-for="(item,index) in allRole"
+        :key="item.roleId"
+        :data-index="index"
+      >
         <div style=" border-bottom:1px solid rgb(63,172,236);margin:0 5px;">
           <span>{{item.roleName}}</span>
           <div style="float:right;padding:0;">
@@ -59,7 +68,15 @@
         <small>{{item.createTime}}</small>
       </li>
     </transition-group>
-    <el-popover placement="bottom" width="300" trigger="click" v-model="isOpenAdd">
+    <!--添加角色弹出框-->
+    <el-popover
+      data-active="添加角色弹出框"
+      placement="bottom"
+      width="300"
+      trigger="click"
+      v-model="isOpenAdd"
+    >
+      <!--添加角色表单-->
       <div>
         <p>添加角色</p>
         <el-form :model="role">
@@ -75,7 +92,7 @@
           <el-button type="primary" @click="addRole()">确 定</el-button>
         </span>
       </div>
-
+      <!--添加角色按钮-->
       <div class="add-box" slot="reference">
         <div
           class="add"
@@ -83,6 +100,7 @@
           @mouseout="$refs.add.style.transform = 'rotate(-90deg)'"
           @mouseover="$refs.add.style.transform = 'rotate(0deg)'"
         >
+        <!--添加角色图标-->
           <svg
             style="margin:auto auto;"
             t="1591326168698"
@@ -108,7 +126,8 @@
         </div>
       </div>
     </el-popover>
-    <el-dialog title="修改角色" :visible.sync="dialogVisible" width="25%">
+    <!--修改角色弹出框-->
+    <el-dialog title="修改角色" :visible.sync="isOpenUpdate" width="25%">
       <el-form :model="role">
         <el-form-item>
           <el-input v-model="role.roleId" autocomplete="off" placeholder="角色ID" disabled></el-input>
@@ -131,15 +150,15 @@
 export default {
   data() {
     return {
-      allRole: [],
-      isOpenAdd: false,
-      dialogVisible: false,
-      role: {},
-      formLabelWidth: "120px"
+      allRole: [],//所有角色
+      isOpenAdd: false,//是否打开添加角色弹出框
+      isOpenUpdate: false,//是否打开修改角色弹出框
+      role: {},//存储添加或修改角色的数据
+      formLabelWidth: "120px"//表单文字标签宽度
     };
   },
   watch: {
-    allRole: function(newVal) {
+    allRole: function(newVal) {//监听获取到所有元素之后动态展示添加按钮
       setTimeout(() => {
         this.$refs.add.style.opacity = 1;
         this.$refs.add.style.transform = "rotate(-90deg)";
@@ -147,15 +166,16 @@ export default {
     }
   },
   methods: {
-    beforeEnter: function(el) {
-      el.style.opacity = 0;
-      el.style.position = "relative";
-      el.style.left = "50px";
+    beforeEnter: function(el) {//展示与管理角色动画效果开始前
+    //设置每个元素样式
+      el.style.opacity = 0.1;//透明度为0
+      el.style.position = "relative";//设置以本来位置
+      el.style.left = "80px";//往做偏差50px
     },
     enter: function(el, done) {
       var delay = el.dataset.index * 200;
       setTimeout(function() {
-        Velocity(el, { opacity: 1, left: 0 }, { complete: done });
+        Velocity(el, { opacity: 1,left: 0 }, { complete: done });
       }, delay);
     },
     leave: function(el, done) {
@@ -243,7 +263,7 @@ export default {
         roleName: role.roleName,
         remark: role.remark
       };
-      this.dialogVisible = true;
+      this.isOpenUpdate = true;
     },
     async updateRole() {
       try {
@@ -256,7 +276,7 @@ export default {
             this.$message.success({
               message: "修改成功"
             });
-            this.dialogVisible = false;
+            this.isOpenUpdate = false;
             this.$emit("setAllRole");
           } else {
             this.$message.error({

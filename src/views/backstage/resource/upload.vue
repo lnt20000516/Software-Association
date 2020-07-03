@@ -11,14 +11,24 @@
           <upload-frame
             @uploadScs="isUploadScs=true"
             @setResName="setResName"
+            @setType="setType"
             :isMedium="isMedium"
             :isSmall="isSmall"
             :maxH="maxH"
             :maxW="maxW"
+            ref="frame"
           ></upload-frame>
-          <upload-information v-if="isUploadScs" :resName="resourceName"></upload-information>
+          <upload-information
+            v-if="isUploadScs&&activeName==='first'"
+            :resName="resourceName"
+            :serverType="serverType"
+            @init="dataInit"
+          ></upload-information>
         </el-tab-pane>
-        <el-tab-pane label="所有资源" name="second"></el-tab-pane>
+        <el-tab-pane label="所有资源" name="second">
+        <all-res>
+        </all-res>
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -32,6 +42,7 @@ export default {
       activeName: "first",
       isUploadScs: false,
       resourceName: "",
+      serverType: "2",
       maxH: 0,
       maxW: 0,
       isMedium: false,
@@ -39,9 +50,7 @@ export default {
     };
   },
   mounted() {
-    this.maxH = this.$parent.$data.maxH;
-    this.maxW = this.$parent.$data.maxW;
-    this.init();
+    this.pageSizeInit();
   },
   watch: {
     "$parent.$data.maxH": function(newVal) {
@@ -49,11 +58,13 @@ export default {
     },
     "$parent.$data.maxW": function(newVal) {
       this.maxW = newVal;
-      this.init();
+      this.pageSizeInit();
     }
   },
   methods: {
-    init() {
+    pageSizeInit() {
+      this.maxH = this.$parent.$data.maxH;
+      this.maxW = this.$parent.$data.maxW;
       if (this.maxW < 800) {
         this.isMedium = false;
         this.isSmall = true;
@@ -65,12 +76,23 @@ export default {
         this.isSmall = false;
       }
     },
+    dataInit() {
+      console.log(1);
+      console.log(this.$data);
+      console.log(this.$options.data());
+      Object.assign(this.$data, this.$options.data())
+      this.pageSizeInit();
+      this.$refs.frame.dataInit();
+    },
     handleClick(tab, event) {
       console.log(tab, event);
     },
     setResName(val) {
       console.log(val);
       this.resourceName = val;
+    },
+    setType(val) {
+      this.serverType = val;
     }
   },
   components: {

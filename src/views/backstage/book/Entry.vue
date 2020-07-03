@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="">
     <div style="margin:23px ">
       <el-breadcrumb separator-class="el-icon-arrow-right" style="width:150px">
         <el-breadcrumb-item style="font-size:18px;">录入书籍</el-breadcrumb-item>
@@ -41,6 +41,7 @@
               :show-file-list="false"
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
+              :headers="token"
             >
               <img v-if="imageUrl" :src="imageUrl" class="avatar" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -68,6 +69,7 @@ export default {
       }
     };
     return {
+      token:{},
       isImg: false,
       imageUrl: "",
       form: {
@@ -96,7 +98,14 @@ export default {
       }
     };
   },
+  created(){
+    this.getToken();
+  },
   methods: {
+    getToken: function() {
+      //获取登录时存储在localStorage中的header-Token，作为上传凭证
+      this.token["HEADER-TOKEN"] = localStorage.getItem("HEADER_TOKEN");
+    },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
       this.isImg = true;
