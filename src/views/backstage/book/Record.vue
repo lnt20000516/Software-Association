@@ -1,6 +1,6 @@
 <template>
-  <div class="">
-    <div style="margin:23px ">
+  <div class>
+    <div style="margin:23px 0">
       <el-breadcrumb separator-class="el-icon-arrow-right" style="width:150px">
         <el-breadcrumb-item style="font-size:18px;">借阅记录</el-breadcrumb-item>
       </el-breadcrumb>
@@ -48,7 +48,11 @@
   </div>
 </template>
 <script>
+import { timeDate } from "../../../tools/transformationDate";
 export default {
+  created() {
+    this.getData();
+  },
   data() {
     return {
       selected: "",
@@ -71,10 +75,15 @@ export default {
         memberName: "",
         memberID: "",
         remark: ""
-      }
+      },
+      token: {}
     };
   },
   methods: {
+    getToken: function() {
+      //获取登录时存储在localStorage中的header-Token，作为上传凭证
+      this.token["HEADER-TOKEN"] = localStorage.getItem("HEADER_TOKEN");
+    },
     async query() {
       console.log(this.selected + "  " + this.value);
       const { data: res } = await this.$http.get(
@@ -98,6 +107,20 @@ export default {
       });
       this.bookData = res.data.records;
       this.pagenum = res.data.current;
+    },
+    async getData() {
+      const { data: res } = await this.$http.get("bookborrow/search", {
+        header: this.token
+      });
+      if (res.code == 200) {
+        this.bookData = res.data.records;
+        this.selected = "";
+        this.value = "";
+        this.pagenum = res.data.current;
+        this.total = res.data.total;
+        this.$message.success("查询记录成功");
+        console.log(res.data);
+      }
     }
   }
 };

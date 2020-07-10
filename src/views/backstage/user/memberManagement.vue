@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div>
     <div style="margin:23px">
       <el-breadcrumb separator-class="el-icon-arrow-right" style="width:150px">
         <el-breadcrumb-item style="font-size:18px;">协会成员管理</el-breadcrumb-item>
@@ -630,9 +630,6 @@ export default {
 };
 </script>
 <style scoped>
-.main {
-  padding: 40px 80px;
-}
 .table {
   margin-top: 40px;
 }

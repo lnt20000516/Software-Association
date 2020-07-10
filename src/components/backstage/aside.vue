@@ -12,8 +12,9 @@
       router
       :collapse="isOpenAL"
       style="overflow: auto;"
-      :style="{'height':maxH+'px'}"
+      :style="{'height':maxH-200+'px'}"
       ref="menu"
+      unique-opened="true"
     >
       <el-submenu
         v-for="item in sort"

@@ -1,6 +1,6 @@
 <template>
-  <div class="book within">
-    <transition name="component" mode="out-in">
+  <div >
+    <transition name="component" mode="out-in" >
       <router-view />
     </transition>
   </div>
