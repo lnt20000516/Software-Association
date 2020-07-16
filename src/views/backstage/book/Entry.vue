@@ -84,7 +84,7 @@ export default {
     return {
       token: {},
       isImg: false,
-      imageUrl: "",
+      isSuccess:false,
       form: {
         bookName: "",
         author: "",
@@ -92,7 +92,8 @@ export default {
         price: 0,
         count: 0,
         bookCategoryID: "",
-        remark: ""
+        remark: "",
+        imageUrl:""
       },
       rules: {
         bookName: [{ required: true, message: "书名不能为空" }],
@@ -162,7 +163,8 @@ export default {
       this.dialogVisible = true;
     },
     handleAvatarSuccess(res, file) {
-      this.imageUrl = res.link;
+      this.form.imageUrl = res.link;
+      this.isSuccess=true;
     },
     imgChange(files, fileList) {
       this.hideUpload = fileList.length >= this.limitNum;
@@ -171,7 +173,7 @@ export default {
       }
     },
     onSubmit(formName) {
-      if (!this.imageUrl) {
+      if (!this.isSuccess) {
         this.$message.error("请选择书籍封面");
         return;
       }
@@ -180,7 +182,8 @@ export default {
           if (this.form.remark == "") {
             this.form.remark = null;
           }
-          console.log(this.form.remark);
+
+          console.log(this.form.imageUrl);
           const { data: res } = await this.$http.post("book/", this.form);
           if (res.code != 200) {
             this.$message.error("提交失败");

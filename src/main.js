@@ -20,14 +20,8 @@ Vue.use(VueFroala)
 import http from './http'; //此处问http文件的路径
 Vue.prototype.$axios = http;
 
-// import axios from 'axios'
-// axios.defaults.headers.post["Content-Type"] = "application/json"
-Vue.prototype.$http = http
-    // axios.defaults.baseURL = 'http://120.26.177.203/'
 
-import ECharts from 'vue-echarts'
-import 'echarts/lib/chart/bar'
-Vue.component('chart', ECharts)
+Vue.prototype.$http = http
 
 Vue.config.productionTip = false
 

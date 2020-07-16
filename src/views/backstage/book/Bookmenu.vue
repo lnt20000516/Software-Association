@@ -95,6 +95,11 @@
               </svg>
             </template>
           </el-table-column>
+          <el-table-column label="书籍封面" width="150" align="center">
+            <template slot-scope="scope">
+              <img :src="scope.row.imageUrl" width="55" height="70">
+            </template>
+          </el-table-column>
           <el-table-column prop="isbn" label="ISBN" width="180" align="center" sortable></el-table-column>
           <el-table-column prop="id" label="书刊条码" width="120" align="center" sortable></el-table-column>
           <el-table-column prop="bookName" label="书刊名称" width="180" align="center" sortable></el-table-column>
@@ -140,7 +145,7 @@
       <div class="borrow">
         <el-dialog title="借书" :visible.sync="dialogBorrowVisible">
           <el-form ref="BorrowForm" label-width="100px" :model="BorrowForm" label-position="right">
-            <el-form-item label="借书人编码" prop="memberID">
+            <el-form-item label="借书人用户名" prop="memberID">
               <el-input v-model="BorrowForm.memberID" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="备注" prop="remark">
@@ -265,27 +270,49 @@ export default {
           headers: this.token
         }
       );
-      if(res.code!=200){
+      if (res.code != 200) {
         console.log(res.message);
-      }else{
+      } else {
         this.$message.success("借书成功");
         this.getList();
-        this.dialogBorrowVisible=false;
+        this.dialogBorrowVisible = false;
       }
     },
     //借书
 
     // 分页
-    handleSizeChange(val) {
+    async handleSizeChange(val) {
       this.pagesize = val;
-      console.log(`每页 ${val} 条`);
+      const { data: res } = await this.$http.get("book/search", {
+        params: { size: val }
+      });
+      if (res.code != 200) {
+        console.log("查询失败");
+      } else {
+        this.tableData = res.data.records;
+        for (let i = 0; i < this.tableData.length; i++) {
+          this.tableData[i].inDate = timeDate(
+            this.tableData[i].inDate * 1000
+          ).dateTime;
+        }
+        this.pagenum = res.data.current;
+      }
     },
     async handleCurrentChange(val) {
       const { data: res } = await this.$http.get("book/search", {
-        params: { pageNum: val }
+        params: { curPage: val }
       });
-      this.tableData = res.data.records;
-      this.pagenum = res.data.current;
+      if (res.code != 200) {
+        console.log("查询失败");
+      } else {
+        this.tableData = res.data.records;
+        for (let i = 0; i < this.tableData.length; i++) {
+          this.tableData[i].inDate = timeDate(
+            this.tableData[i].inDate * 1000
+          ).dateTime;
+        }
+        this.pagenum = res.data.current;
+      }
     },
     // 分页
 
@@ -303,7 +330,7 @@ export default {
         this.tableData = res.data.records;
         for (let i = 0; i < this.tableData.length; i++) {
           this.tableData[i].inDate = timeDate(
-            this.tableData[i].inDate
+            this.tableData[i].inDate * 1000
           ).dateTime;
         }
         this.pagenum = res.data.current;
