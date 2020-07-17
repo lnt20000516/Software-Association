@@ -26,9 +26,9 @@
             <el-form-item label="数量" prop="count">
               <el-input v-model.number="form.count" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="分类号">
+            <el-form-item label="分类号" prop="bookCategoryID">
               <!-- <el-input v-model="form.bookCategoryID" autocomplete="off"></el-input> -->
-              <el-cascader :props="props"></el-cascader>
+              <el-cascader :props="props" :show-all-levels="false" v-model="form.bookCategoryID"></el-cascader>
             </el-form-item>
             <el-form-item label="ISBN" prop="isbn">
               <el-input v-model="form.isbn"></el-input>
@@ -107,20 +107,21 @@ export default {
         lazyLoad(node, resolve) {
           let resdata = {};
           const id = node.root ? null : node.value;
-          if (id == null) {
+          if (id != null) {
             resdata = { categoryId: id };
           }
           console.log(id);
+          console.log(resdata);
           _this.$axios
-            .get("/categorise", {
+            .get("book/categorise", {
               params: resdata
             })
             .then(res => {
-              if (res.data.length == 0) {
+              if (res.data.data.length == 0) {
                 node.data.leaf = true;
                 console.log(node.data.leaf);
               }
-              const nodes = Array.from(res.data).map(item => ({
+              const nodes = Array.from(res.data.data).map(item => ({
                 value: item.id,
                 label: item.bookCategoryName,
                 leaf: false
@@ -209,10 +210,13 @@ export default {
       }
     },
     onSubmit(formName) {
+      this.form.bookCategoryID=this.form.bookCategoryID[this.form.bookCategoryID.length-1]
+      console.log(this.form.bookCategoryID)
       if (!this.isSuccess) {
         this.$message.error("请选择书籍封面");
         return;
       }
+  
       this.$refs[formName].validate(async valid => {
         if (valid) {
           if (this.form.remark == "") {
