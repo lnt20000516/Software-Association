@@ -250,7 +250,7 @@ export default {
         params: { startDay: start, endDay: end }
       });
       if (res.code == 200) {
-        this.getChartData(end,start);
+        this.getChartData(end, start);
         this.pagenum = res.data.current;
         this.total = res.data.total;
         this.bookData = res.data.records;
@@ -310,7 +310,7 @@ export default {
         params: { startDay: start, endDay: end }
       });
       if (res.code == 200) {
-        this.getChartData(end,start);
+        this.getChartData(end, start);
         let name = [];
         this.pagenum = res.data.current;
         this.total = res.data.total;
@@ -362,7 +362,9 @@ export default {
       // 绘制图表
       myChart.setOption(this.options);
     },
-    async getChartData(end,start) {
+    async getChartData(end, start) {
+      this.x = [];
+      this.data = [];
       const { data: res } = await this.$http.get("bookborrow/loanCount", {
         headers: this.token,
         params: { endDay: end, startDay: start }

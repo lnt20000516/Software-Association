@@ -26,15 +26,21 @@
             <el-form-item label="数量" prop="count">
               <el-input v-model.number="form.count" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="分类号" prop="bookCategoryID">
-              <el-input v-model="form.bookCategoryID" autocomplete="off"></el-input>
+            <el-form-item label="分类号">
+              <!-- <el-input v-model="form.bookCategoryID" autocomplete="off"></el-input> -->
+              <el-cascader :props="props"></el-cascader>
             </el-form-item>
             <el-form-item label="ISBN" prop="isbn">
               <el-input v-model="form.isbn"></el-input>
             </el-form-item>
           </div>
           <div>
-            <el-form :model="form" :label-width="formLabelWidth" label-position="top" :rules="rules">
+            <el-form
+              :model="form"
+              :label-width="formLabelWidth"
+              label-position="top"
+              :rules="rules"
+            >
               <el-form-item label="书籍封面" ref="uploadElement" prop="img">
                 <el-upload
                   ref="upload"
@@ -73,6 +79,7 @@
 <script>
 export default {
   data() {
+    let _this = this;
     var checkNum = (rule, value, callback) => {
       console.log(value);
       if (value <= 0) {
@@ -84,7 +91,7 @@ export default {
     return {
       token: {},
       isImg: false,
-      isSuccess:false,
+      isSuccess: false,
       form: {
         bookName: "",
         author: "",
@@ -93,7 +100,36 @@ export default {
         count: 0,
         bookCategoryID: "",
         remark: "",
-        imageUrl:""
+        imageUrl: ""
+      },
+      props: {
+        lazy: true,
+        lazyLoad(node, resolve) {
+          let resdata = {};
+          const id = node.root ? null : node.value;
+          if (id == null) {
+            resdata = { categoryId: id };
+          }
+          console.log(id);
+          _this.$axios
+            .get("/categorise", {
+              params: resdata
+            })
+            .then(res => {
+              if (res.data.length == 0) {
+                node.data.leaf = true;
+                console.log(node.data.leaf);
+              }
+              const nodes = Array.from(res.data).map(item => ({
+                value: item.id,
+                label: item.bookCategoryName,
+                leaf: false
+              }));
+              // console.log(nodes)
+              resolve(nodes);
+            })
+            .catch(error => {});
+        }
       },
       rules: {
         bookName: [{ required: true, message: "书名不能为空" }],
@@ -109,7 +145,7 @@ export default {
           { type: "number", message: "数量必须为数字值" },
           { validator: checkNum, trigger: "blur" }
         ],
-        img: [{ required: true, message: "请选择封面" }],
+        img: [{ required: true, message: "请选择封面" }]
       },
       hideUpload: false,
       dialogImageUrl: "",
@@ -164,7 +200,7 @@ export default {
     },
     handleAvatarSuccess(res, file) {
       this.form.imageUrl = res.link;
-      this.isSuccess=true;
+      this.isSuccess = true;
     },
     imgChange(files, fileList) {
       this.hideUpload = fileList.length >= this.limitNum;

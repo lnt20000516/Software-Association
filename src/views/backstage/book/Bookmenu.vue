@@ -271,7 +271,7 @@ export default {
         }
       );
       if (res.code != 200) {
-        console.log(res.message);
+        this.$message.error(res.message);
       } else {
         this.$message.success("借书成功");
         this.getList();
